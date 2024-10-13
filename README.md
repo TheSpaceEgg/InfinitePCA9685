@@ -12,29 +12,10 @@ The `InfinitePCA9685` library is designed to manage and control multiple PCA9685
 - Set PWM frequency and individual PWM signals for each device.
 - Easily scalable for complex hardware setups on Arduino.
 - Debug mode to monitor the status of each device.
+- Constructors based on multiple I2C buses or single bus.
 
 ## Dependencies
 This library depends on the `Wire` library for I2C communication, which is standard in Arduino environments.
 
 ## Usage
-To use the `InfinitePCA9685` library, include it in your Arduino sketch. Here's an example of basic usage:
-
-```cpp
-#include <InfinitePCA9685.h>
-
-void setup() {
-    std::vector<std::pair<int, uint8_t>> devices = {{0x40}, {0x41}};
-    MultiPCA9685 PCAobj(devices, 50);
-
-    // Set PWM for the first motor on the first PCA9685
-    PCAobj.setPWM(0, 0, 2000);
-    // Set PWM for the first motor on the second PCA9685
-    PCAobj.setPWM(15, 0, 2000);
-
-    // Output current setup to serial
-    PCAobj.getSetup();
-}
-
-void loop() {
-    // Insert your repeated code here
-}
+To use the `InfinitePCA9685` library, include it in your Arduino sketch. See examples.
