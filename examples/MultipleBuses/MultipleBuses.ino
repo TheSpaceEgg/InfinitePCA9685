@@ -1,5 +1,5 @@
 /**
- * @file SingleBus.ino
+ * @file MultipleBuses.ino
  * @author Will Hickmott
  * @github TheSpaceEgg
  * @brief This file is part of the multiple instances PCA9685 library.
@@ -15,24 +15,33 @@
 #define SERVOMIN    200  // Minimum pulse length count (out of 4096)
 #define SERVOMAX    400  // Maximum pulse length count (out of 4096)
 
-// I2C addresses for PCA9685 devices on the same bus
-std::vector<uint8_t> pcaAddresses = {0x40, 0x41};  // Add more addresses as required
+// Create TwoWire instances for ESP32's I2C buses
+TwoWire I2C_1 = Wire;
+TwoWire I2C_2 = Wire1;
 
-// Instantiate the MultiPCA9685 object with the default device frequency of 50Hz on a single I2C bus
-MultiPCA9685 manyPCA9685s(Wire, pcaAddresses, 50);
+// Vector of pairs of TwoWire pointers and I2C addresses
+std::vector<std::pair<TwoWire*, uint8_t>> pcaBusAddressPairs = {
+    { &I2C_1, 0x40 }, // I2C Bus 1, Address 0x40
+    { &I2C_2, 0x41 }, // I2C Bus 2, Address 0x41
+};
+
+// Instantiate the MultiPCA9685 object with default device frequency of 50Hz
+MultiPCA9685 manyPCA9685s(pcaBusAddressPairs);
 
 void setup() {
     Serial.begin(115200);
 
-    // Initialize the I2C bus (standard Wire)
-    Wire.begin(21, 22); // SDA = 21, SCL = 22 for ESP32 or adjust for your board
+    // Initialize I2C buses
+    I2C_1.begin(21, 22); // SDA = 21, SCL = 22 (for I2C bus 1)
+    I2C_2.begin(33, 32); // SDA = 33, SCL = 32 (for I2C bus 2)
 
-    // Initialize all PCA9685 devices
+    // Initialize PCA9685 devices
     manyPCA9685s.begin();
-    //manyPCA9685s.toggleDebug(); // Enable debug output if needed
+    //manyPCA9685s.toggleDebug(); // Enable debug output
 
     // Display the current setup configuration
     manyPCA9685s.getSetup();
+
 }
 
 void loop() {
